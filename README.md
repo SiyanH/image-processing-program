@@ -186,4 +186,4 @@ Image 2:
 
 ## Disclaimer
 
-This is a group project for CS5004 Object-Oriented Design and a Git repository was not used originally. For maintaining academic intergity, please do NOT reuse any code in this repository if you are working on your project for a related course.
+This is a group project for CS5004 Object-Oriented Design and a Git repository was not used originally. For maintaining academic integrity, please do NOT reuse any code in this repository if you are working on your project for a related course.
