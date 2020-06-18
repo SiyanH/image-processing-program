@@ -173,7 +173,7 @@ save the image correctly.
 ## Image Citations
 
 Image 0 was downloaded from the 
-[course website](https://course.ccs.neu.edu/cs5004/manhattan-small.png).
+[course website](https://course.ccs.neu.edu/cs5004/).
 
 Image 1 and 2 were downloaded from [Pexels](https://www.pexels.com/) and can be used for free 
 according to their terms of use.
@@ -183,3 +183,7 @@ Image 1:
 
 Image 2:
 [By Peter de Vink](https://www.pexels.com/photo/photography-of-airplane-near-mountain-849534/)
+
+## Disclaimer
+
+This is a group project for CS5004 Object-Oriented Design and a Git repository was not used originally. For maintaining academic intergity, please do NOT reuse any code in this repository if you are working on your project for a related course.
