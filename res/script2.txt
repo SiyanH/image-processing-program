@@ -1,0 +1,19 @@
+load img2.jpg  
+dither
+blur
+blur
+blur
+save img2-dither-blur3.png 
+sharpen
+save img2-dither-blur3-sharpen.png
+load img0.jpg
+sepiatone
+sharpen
+sharpen
+save img0-sepiatone-sharpen2.png
+generate checkerboard 10
+save checkerboard.png
+generate flag 290 436 FR
+save flagFR.png
+generate rainbow 175 210 v
+save rainbow.png

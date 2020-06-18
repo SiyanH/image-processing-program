@@ -1,0 +1,4 @@
+load  img1.jpg
+  mosaic 15000
+greyscale
+save img1-mosaic-greyscale.jpg

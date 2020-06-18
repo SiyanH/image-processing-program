@@ -1,0 +1,36 @@
+load img0.jpg
+greyscale
+save img0-greyscale.jpg
+load img0.jpg
+sepiatone
+save img0-sepiatone.jpg
+load img0.jpg
+dither
+save img0-dither.jpg
+load img0.jpg
+mosaic 8000
+save img0-mosaic.jpg
+load img1.jpg
+greyscale
+save img1-greyscale.jpg
+load img1.jpg
+sepiatone
+save img1-sepiatone.jpg
+load img1.jpg
+dither
+save img1-dither.jpg
+load img1.jpg
+mosaic 4000
+save img1-mosaic.jpg
+load img2.jpg
+greyscale
+save img2-greyscale.jpg 
+load img2.jpg
+sepiatone
+save img2-sepiatone.jpg
+load img2.jpg
+dither
+save img2-dither.jpg
+load img2.jpg
+mosaic 2000
+save img2-mosaic.jpg
