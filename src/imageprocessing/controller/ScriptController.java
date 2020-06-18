@@ -14,12 +14,14 @@ import imageprocessing.operation.PatternDirection;
 import imageprocessing.util.ImageUtil;
 
 /**
- * This class represents a controller for the image processing program. It offers all the methods
- * mandated by the {@link ImageProcessingController} interface, and contains the command script read
- * from the user input, the model for the program, the command supported by the program, and the
- * maps from command string to method argument.
+ * This class represents a script controller for the image processing program. It offers all the
+ * methods mandated by the {@link ImageProcessingController} interface, and runs by processing
+ * command script. It contains the command script read from the user input, the model for the
+ * program, the command supported by the program, and the maps from command string to method
+ * argument. The supported features are: blur, sharpen, sepia, greyscale, mosaics, dithering, image
+ * generation and the ability to load and save images.
  */
-public class ImgProcController implements ImageProcessingController {
+public class ScriptController implements ImageProcessingController {
   private final Readable script;
   private final ImageProcessingModel model;
   private final String[] validCommand;
@@ -33,7 +35,7 @@ public class ImgProcController implements ImageProcessingController {
    * @param script the command script with one command per line
    * @param model  the model for the program
    */
-  public ImgProcController(Readable script, ImageProcessingModel model) {
+  public ScriptController(Readable script, ImageProcessingModel model) {
     this.script = script;
     this.model = model;
     this.validCommand = setValidCommand();
@@ -109,8 +111,8 @@ public class ImgProcController implements ImageProcessingController {
         model.setImage(new Image(ImageUtil.readImage(cmdToken.group(4))));
         break;
       case "save":
-        Image img = model.getImage();
-        ImageUtil.writeImage(img.getRGB(), img.getWidth(), img.getHeight(), cmdToken.group(4));
+        ImageUtil.writeImage(model.getImageRGB(), model.getImageWidth(), model.getImageHeight(),
+                cmdToken.group(4));
         break;
       case "generate":
         String pattern = cmdToken.group(2);

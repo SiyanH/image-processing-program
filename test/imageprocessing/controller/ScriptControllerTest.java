@@ -19,9 +19,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
- * This contains all the unit tests for the image processing controller.
+ * This contains all the unit tests for the script controller for the image processing program.
  */
-public class ImgProcControllerTest {
+public class ScriptControllerTest {
   private ImageProcessingModel model;
   private ImageProcessingController controller;
 
@@ -44,7 +44,7 @@ public class ImgProcControllerTest {
 
     for (String s : invalidScript) {
       try {
-        controller = new ImgProcController(new StringReader(s), model);
+        controller = new ScriptController(new StringReader(s), model);
         controller.run();
         fail("An exception should be thrown");
       } catch (IllegalStateException e) {
@@ -53,7 +53,7 @@ public class ImgProcControllerTest {
     }
 
     try {
-      controller = new ImgProcController(new StringReader("generate checkerboard 0"), model);
+      controller = new ScriptController(new StringReader("generate checkerboard 0"), model);
       controller.run();
       fail("An exception should be thrown");
     } catch (IllegalStateException e) {
@@ -62,7 +62,7 @@ public class ImgProcControllerTest {
     }
 
     try {
-      controller = new ImgProcController(new StringReader("load res/img0.jpg\nmosaic 0"), model);
+      controller = new ScriptController(new StringReader("load res/img0.jpg\nmosaic 0"), model);
       controller.run();
       fail("An exception should be thrown");
     } catch (IllegalStateException e) {
@@ -71,7 +71,7 @@ public class ImgProcControllerTest {
     }
 
     try {
-      controller = new ImgProcController(new StringReader("load img0.jpg"), model);
+      controller = new ScriptController(new StringReader("load img0.jpg"), model);
       controller.run();
       fail("An exception should be thrown");
     } catch (IllegalStateException e) {
@@ -88,7 +88,7 @@ public class ImgProcControllerTest {
   @Test
   public void testImageIO() throws IOException {
     String script = "load res/img0.jpg\nsave res/test/img0.png";
-    controller = new ImgProcController(new StringReader(script), model);
+    controller = new ScriptController(new StringReader(script), model);
     controller.run();
 
     assertArrayEquals(ImageUtil.readImage("res/img0.jpg"),
@@ -103,13 +103,13 @@ public class ImgProcControllerTest {
   @Test
   public void testGreyScale() throws IOException {
     String script = "load res/img0.jpg\ngreyscale\nsave res/test/img0-greyscale.png";
-    controller = new ImgProcController(new StringReader(script), model);
+    controller = new ScriptController(new StringReader(script), model);
     controller.run();
 
     model.setImage(new Image(ImageUtil.readImage("res/img0.jpg")));
     model.process(ProcessingOperation.GREYSCALE);
 
-    assertArrayEquals(model.getImage().getRGB(),
+    assertArrayEquals(model.getImageRGB(),
             ImageUtil.readImage("res/test/img0-greyscale.png"));
   }
 
@@ -121,14 +121,13 @@ public class ImgProcControllerTest {
   @Test
   public void testBlur() throws IOException {
     String script = "load res/img0.jpg\nblur\nsave res/test/img0-blur.png";
-    controller = new ImgProcController(new StringReader(script), model);
+    controller = new ScriptController(new StringReader(script), model);
     controller.run();
 
     model.setImage(new Image(ImageUtil.readImage("res/img0.jpg")));
     model.process(ProcessingOperation.BLUR);
 
-    assertArrayEquals(model.getImage().getRGB(),
-            ImageUtil.readImage("res/test/img0-blur.png"));
+    assertArrayEquals(model.getImageRGB(), ImageUtil.readImage("res/test/img0-blur.png"));
   }
 
   /**
@@ -139,13 +138,13 @@ public class ImgProcControllerTest {
   @Test
   public void testSepiaTone() throws IOException {
     String script = "load res/img0.jpg\nsepiatone\nsave res/test/img0-sepiatone.png";
-    controller = new ImgProcController(new StringReader(script), model);
+    controller = new ScriptController(new StringReader(script), model);
     controller.run();
 
     model.setImage(new Image(ImageUtil.readImage("res/img0.jpg")));
     model.process(ProcessingOperation.SEPIATONE);
 
-    assertArrayEquals(model.getImage().getRGB(),
+    assertArrayEquals(model.getImageRGB(),
             ImageUtil.readImage("res/test/img0-sepiatone.png"));
   }
 
@@ -157,13 +156,13 @@ public class ImgProcControllerTest {
   @Test
   public void testSharpen() throws IOException {
     String script = "load res/img0.jpg\nsharpen\nsave res/test/img0-sharpen.png";
-    controller = new ImgProcController(new StringReader(script), model);
+    controller = new ScriptController(new StringReader(script), model);
     controller.run();
 
     model.setImage(new Image(ImageUtil.readImage("res/img0.jpg")));
     model.process(ProcessingOperation.SHARPEN);
 
-    assertArrayEquals(model.getImage().getRGB(),
+    assertArrayEquals(model.getImageRGB(),
             ImageUtil.readImage("res/test/img0-sharpen.png"));
   }
 
@@ -175,14 +174,13 @@ public class ImgProcControllerTest {
   @Test
   public void testDither() throws IOException {
     String script = "load res/img0.jpg\ndither\nsave res/test/img0-dither.png";
-    controller = new ImgProcController(new StringReader(script), model);
+    controller = new ScriptController(new StringReader(script), model);
     controller.run();
 
     model.setImage(new Image(ImageUtil.readImage("res/img0.jpg")));
     model.process(ProcessingOperation.DITHER);
 
-    assertArrayEquals(model.getImage().getRGB(),
-            ImageUtil.readImage("res/test/img0-dither.png"));
+    assertArrayEquals(model.getImageRGB(), ImageUtil.readImage("res/test/img0-dither.png"));
   }
 
   /**
@@ -193,12 +191,12 @@ public class ImgProcControllerTest {
   @Test
   public void testGenerateCheckerBoard() throws IOException {
     String script = "generate checkerboard 20\nsave res/test/checkerboard.png";
-    controller = new ImgProcController(new StringReader(script), model);
+    controller = new ScriptController(new StringReader(script), model);
     controller.run();
 
     model.generateCheckerBoard(20);
 
-    assertArrayEquals(model.getImage().getRGB(),
+    assertArrayEquals(model.getImageRGB(),
             ImageUtil.readImage("res/test/checkerboard.png"));
   }
 
@@ -210,13 +208,12 @@ public class ImgProcControllerTest {
   @Test
   public void testGenerateFlag() throws IOException {
     String script = "generate flag 290 436 FR\nsave res/test/flagFR.png";
-    controller = new ImgProcController(new StringReader(script), model);
+    controller = new ScriptController(new StringReader(script), model);
     controller.run();
 
     model.generateFlag(290, 436, CountryAlphaCode.FR);
 
-    assertArrayEquals(model.getImage().getRGB(),
-            ImageUtil.readImage("res/test/flagFR.png"));
+    assertArrayEquals(model.getImageRGB(), ImageUtil.readImage("res/test/flagFR.png"));
   }
 
   /**
@@ -227,12 +224,11 @@ public class ImgProcControllerTest {
   @Test
   public void testRainbow() throws IOException {
     String script = "generate rainbow 175 210 v\nsave res/test/rainbow.png";
-    controller = new ImgProcController(new StringReader(script), model);
+    controller = new ScriptController(new StringReader(script), model);
     controller.run();
 
     model.generateRainbow(175, 210, PatternDirection.VERTICAL);
 
-    assertArrayEquals(model.getImage().getRGB(),
-            ImageUtil.readImage("res/test/rainbow.png"));
+    assertArrayEquals(model.getImageRGB(), ImageUtil.readImage("res/test/rainbow.png"));
   }
 }

@@ -1,6 +1,8 @@
 package imageprocessing.model;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -24,44 +26,92 @@ import imageprocessing.operation.SepiaTone;
 /**
  * This class represents a model for the image processing program. It offers all the methods
  * mandated by the {@link ImageProcessingModel} interface, and contains the image to be processed or
- * generated, and the maps of image processing operation and country alpha code.
+ * generated, and the maps of image processing operation and country alpha code. It also maintains a
+ * record of the resulting images of every operation performed, the index of current image in the
+ * record, and the remaining number of times for the redo operation, to support the redo and undo
+ * features.
  */
 public class ImgProcModel implements ImageProcessingModel {
+  private int i;
+  private int canRedo;
   private Image img;
+  private List<Image> imgRecord;
   private final Map<ProcessingOperation, Function<Image, ImageProcessing>> procOperation;
   private final Map<CountryAlphaCode, BiFunction<Integer, Integer, ImageProcessing>> generation;
 
   /**
-   * Construct a image processing model, and initialize its maps.
+   * Construct a image processing model, and initialize its index of current image, the remaining
+   * number of times for the redo operation, the image record and the maps for image processing and
+   * generation operations.
    */
   public ImgProcModel() {
+    this.i = -1;
+    this.canRedo = 0;
+    this.imgRecord = new ArrayList<>();
     this.procOperation = setOperationMap();
     this.generation = setGenerationMap();
   }
 
   @Override
   public void setImage(Image img) {
+    Objects.requireNonNull(img, "Image cannot be null");
+
+    this.i++;
+    this.canRedo = 0;
     this.img = img;
+    this.imgRecord.add(img);
   }
 
   @Override
-  public Image getImage() throws IllegalStateException {
-    if (img == null) {
+  public void redo() throws IllegalStateException {
+    if (i == imgRecord.size() - 1 || canRedo < 1) {
+      throw new IllegalStateException("No operation to redo");
+    }
+
+    i++;
+    canRedo--;
+    img = imgRecord.get(i);
+  }
+
+  @Override
+  public void undo() throws IllegalStateException {
+    if (i < 1) {
+      throw new IllegalStateException("No operation to undo");
+    }
+
+    i--;
+    canRedo++;
+    img = imgRecord.get(i);
+  }
+
+  @Override
+  public int[][][] getImageRGB() throws IllegalStateException {
+    if (imgRecord.isEmpty()) {
       throw new IllegalStateException("No image");
     }
 
-    return img;
+    return img.getRGB();
+  }
+
+  @Override
+  public int getImageHeight() throws IllegalStateException {
+    return img.getHeight();
+  }
+
+  @Override
+  public int getImageWidth() throws IllegalStateException {
+    return img.getWidth();
   }
 
   @Override
   public void process(ProcessingOperation operation) throws IllegalStateException {
-    if (img == null) {
+    if (imgRecord.isEmpty()) {
       throw new IllegalStateException("No image to process");
     }
 
     Objects.requireNonNull(operation, "Operation cannot be null");
 
-    img = procOperation.get(operation).apply(img).apply();
+    setImage(procOperation.get(operation).apply(img).apply());
   }
 
   @Override
@@ -70,12 +120,12 @@ public class ImgProcModel implements ImageProcessingModel {
       throw new IllegalStateException("No image to convert to mosaic");
     }
 
-    img = new Mosaic(img, numSeeds).apply();
+    setImage(new Mosaic(img, numSeeds).apply());
   }
 
   @Override
   public void generateCheckerBoard(int size) throws IllegalArgumentException {
-    img = new GenerationCheckerBoard(size).apply();
+    setImage(new GenerationCheckerBoard(size).apply());
   }
 
   @Override
@@ -83,13 +133,13 @@ public class ImgProcModel implements ImageProcessingModel {
           throws IllegalArgumentException {
     Objects.requireNonNull(country, "Country cannot be null");
 
-    img = generation.get(country).apply(height, width).apply();
+    setImage(generation.get(country).apply(height, width).apply());
   }
 
   @Override
   public void generateRainbow(int height, int width, PatternDirection direction)
           throws IllegalArgumentException {
-    img = new GenerationRainbow(height, width, direction).apply();
+    setImage(new GenerationRainbow(height, width, direction).apply());
   }
 
   /**

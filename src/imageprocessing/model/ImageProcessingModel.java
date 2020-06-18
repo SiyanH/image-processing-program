@@ -6,17 +6,34 @@ import imageprocessing.operation.PatternDirection;
 /**
  * This interface represents a model for the image processing program. It includes methods that an
  * image processing model is expected to offer, which are the operations designed to be supported by
- * the program and called bt the controller.
+ * the program and called by the controller.
  */
 public interface ImageProcessingModel {
   /**
-   * Return the image contained in this model. The image is either the processed image or the
-   * generated image.
+   * Return as a 3D array the RGB values of the image contained in this model. The image is either
+   * the processed image or the generated image. The dimensions of the returned array are row, col
+   * and channel respectively.
    *
-   * @return the image contained in this model
+   * @return the RGB values of the image contained in this model
    * @throws IllegalStateException if there is no image contained in this model
    */
-  Image getImage() throws IllegalStateException;
+  int[][][] getImageRGB() throws IllegalStateException;
+
+  /**
+   * Return the height of the image contained in this model.
+   *
+   * @return the height of the image contained in this model
+   * @throws IllegalStateException if there is no image contained in this model
+   */
+  int getImageHeight() throws IllegalStateException;
+
+  /**
+   * Return the width of the image contained in this model.
+   *
+   * @return the width of the image contained in this model
+   * @throws IllegalStateException if there is no image contained in this model
+   */
+  int getImageWidth() throws IllegalStateException;
 
   /**
    * Set the image contained in this model to the given image.
@@ -24,6 +41,20 @@ public interface ImageProcessingModel {
    * @param img the image object to be set
    */
   void setImage(Image img);
+
+  /**
+   * Redo the last undone image operation, excluding file operations (i.e., save/load).
+   *
+   * @throws IllegalStateException if there is no undone operation
+   */
+  void redo() throws IllegalStateException;
+
+  /**
+   * Undo the last image operation, excluding file operations (i.e., save/load).
+   *
+   * @throws IllegalStateException if there is no operation done before
+   */
+  void undo() throws IllegalStateException;
 
   /**
    * Perform the given image processing operation on the image contained in this model. The result
